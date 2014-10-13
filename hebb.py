@@ -31,8 +31,8 @@ for t in range(num_trials):
 	# compute neuron output for all data (can be done as one line)
 	outputs = (D[0,:]*w[0]) + (D[1,:]*w[1])
 	for i in range(len(outputs)):
-		dw[0] += outputs[i] * D[0,i]
-		dw[1] += outputs[i] * D[1,i]
+		dw[0] += outputs[i] * D[0,i] - outputs[i]**2 * w[0]
+		dw[1] += outputs[i] * D[1,i] - outputs[i]**2 * w[1]
 	dw[0] = dw[0]/float(len(outputs))
 	dw[1] = dw[1]/float(len(outputs))
 	print dw
