@@ -36,7 +36,7 @@ for t in range(num_trials):
 	dw[0] = dw[0]/float(len(outputs))
 	dw[1] = dw[1]/float(len(outputs))
 	print dw
-	w = w + dw
+	w = w + dw * eta
 	#print w
 
 	# compute dw: Hebbian learning rule 
