@@ -26,28 +26,36 @@ h=plt.plot([0,w1[0]],[0,w1[1]],'r',linewidth=2);
 g=plt.plot([0,w2[0]],[0,w2[1]],'g',linewidth=2);  
 
   
-num_trials=100;
-eta=0.1/K;
+num_trials=200;
+#eta=0.1/K;
+eta = 1
 D = np.hstack((D1,D2))
+D = D1
 dw1 = np.zeros((2,1))
 dw2 = np.zeros((2,1))
 for t in range(num_trials):
 	# compute neuron output for all data (can be done as one line)
 	outputs1 = (D[0,:]*w1[0]) + (D[1,:]*w1[1])
+	outputs2 = (D[0,:]*w2[0]) + (D[1,:]*w2[1])
 	for i in range(len(outputs1)):
 		dw1[0] += outputs1[i] * D[0,i] - outputs1[i]**2 * w1[0]
 		dw1[1] += outputs1[i] * D[1,i] - outputs1[i]**2 * w1[1]
+		dw2[0] += outputs2[i] * (D[0,i] - outputs2[i]* w2[0] - outputs1[i]*w1[0])
+		dw2[1] += outputs2[i] * (D[1,i] - outputs2[i] * w2[1] - outputs1[i] * w1[1])
 	dw1[0] = dw1[0]/float(len(outputs1))
 	dw1[1] = dw1[1]/float(len(outputs1))
+	dw2[0] = dw2[0]/float(len(outputs2))
+	dw2[1] = dw2[1]/float(len(outputs2))
 	print dw1
 	w1 = w1 + dw1 * eta
+	w2 = w2 + dw2 * eta
 
 # for t in range(num_trials):
 # 	# compute neuron output for all data (can be done as one line)
 # 	outputs2 = (D[0,:]*w2[0]) + (D[1,:]*w2[1])
-# 	for i in range(len(outputs1)):
-# 		dw2[0] += outputs2[i] * (D[0,i] - outputs2[i]* w2[0])
-# 		dw2[1] += outputs2[i] * (D[1,i] - outputs2[i] * w2[1])
+# 	for i in range(len(outputs2)):
+# 		dw2[0] += outputs2[i] * (D[0,i] - outputs2[i]* w2[0] - outputs1[i]*w1[0])
+# 		dw2[1] += outputs2[i] * (D[1,i] - outputs2[i] * w2[1] - outputs1[i] * w1[1])
 # 	dw2[0] = dw2[0]/float(len(outputs2))
 # 	dw2[1] = dw2[1]/float(len(outputs2))
 # 	print dw2
@@ -58,7 +66,7 @@ for t in range(num_trials):
 	# update weight vector by dw
 
 	h[0].set_data([0,w1[0]], [0,w1[1]]) # replot weight vector
-# g[0].set_data([0,w2[0]], [0,w2[1]]) # replot weight vector
+ 	g[0].set_data([0,w2[0]], [0,w2[1]]) # replot weight vector
 	plt.draw()
 	#time.sleep(0.25)
 plt.show()
