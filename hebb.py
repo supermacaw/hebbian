@@ -26,7 +26,7 @@ h=plt.plot([0,w1[0]],[0,w1[1]],'r',linewidth=2);
 g=plt.plot([0,w2[0]],[0,w2[1]],'g',linewidth=2);  
 
   
-num_trials=200;
+num_trials=100;
 #eta=0.1/K;
 eta = 1
 D = np.hstack((D1,D2))
@@ -69,5 +69,7 @@ for t in range(num_trials):
  	g[0].set_data([0,w2[0]], [0,w2[1]]) # replot weight vector
 	plt.draw()
 	#time.sleep(0.25)
+#print np.dot(w1, w2)
+plt.axis('equal')
 plt.show()
   
