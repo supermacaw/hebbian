@@ -75,6 +75,7 @@ for t in range(num_trials):
 # plt.figure()
 # plt.imshow(w2.reshape((64,60)))
 # plt.show()
+eigmovie(avgface, w1.reshape((64,60)), 100)
 
 plt.figure()
 points1 = [np.dot(faces[:,i].astype(float),w1.astype(float)) for i in range(48)] 
