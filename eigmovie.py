@@ -26,28 +26,29 @@ def eigmovie(mu,e,lim):
       #time.sleep(0.1)
     plt.show()
 
-faces = np.load('faces2.npz')['faces2']
-faceaggregate = np.zeros((60,64))
+faces = np.load('faces2.npz')['faces2'].astype(float)
+# plt.imshow(faces[:,0].reshape((64,60)))
+# plt.show()
+avgface = np.average(faces, axis=1)
+plt.figure()
+# plt.imshow(avgface.reshape((64,60)))
+# plt.show()
+newdata = np.zeros((3840, 48))
 for i in range(48):
-  face = np.reshape(faces[:,i], (60,64))
-  faceaggregate += face
-avgface = faceaggregate / float(48)
-avgfacereshaped = np.reshape(avgface,(3840))
-newdata = np.zeros((3840,48))
+  newdata[:,i] = faces[:,i] - avgface
+  #plt.imshow(newdata[:,i].reshape((60,64)))
+  #plt.show()
 
-for i in range(48):
-  newdata[:,i] = faces[:,i] - avgfacereshaped
-
-w1=np.random.randn(3840,);   
-w2=np.random.randn(3840,)     
+w1=np.random.randn(3840,).astype(float);   
+w2=np.random.randn(3840,).astype(float)    
 num_trials=100;
 #eta=0.1/K;
 print w1, w2
-eta = 0.01
+eta = 0.00001
 D = newdata
 
-dw1 = np.zeros((3840,))
-dw2 = np.zeros((3840,))
+dw1 = np.zeros((3840,)).astype(float)
+dw2 = np.zeros((3840,)).astype(float)
 outputs1 = np.zeros((3840,48))
 outputs2 = np.zeros((3840,48))
 for t in range(num_trials):
@@ -55,17 +56,29 @@ for t in range(num_trials):
   for i in range(48):
     #print w1.shape, D[:,i].shape, outputs1.shape
     outputs1[:,i] = w1*D[:,i]
-    print outputs1[i]
+    #print outputs1[i]
     # print w1, D[:,i]
     #print w1, w2
     outputs2[:,i] = w2*D[:,i]
   for i in range(48):
     dw1 += eta * outputs1[:,i]*(D[:,i] - outputs1[:,i] * w1)/float(len(outputs1))
     dw2 += eta * outputs2[:,i] * (D[:,i]- outputs2[:,i]* w2 - outputs1[:,i]*w1)/float(len(outputs2))
-  print dw1, dw2
+  #print dw1, dw2
   w1 = w1 + dw1 * eta
   w2 = w2 + dw2 * eta
 
-eigmovie(avgface, np.reshape(w1,(60,64)), 10)
-eigmovie(avgface, np.reshape(w2,(60,64)), 10)
-print w1 - w2
+# eigmovie(np.zeros((60,64)), np.reshape(w2,(60,64)), 1000)
+# eigmovie(np.zeros((60,64)), np.reshape(w1,(60,64)), 1000)
+# plt.figure()
+# plt.imshow(w1.reshape((64,60)))
+# plt.show()
+# plt.figure()
+# plt.imshow(w2.reshape((64,60)))
+# plt.show()
+
+plt.figure()
+points1 = [np.dot(faces[:,i].astype(float),w1.astype(float)) for i in range(48)] 
+points2 = [np.dot(faces[:,i].astype(float),w2.astype(float)) for i in range(48)]
+plt.scatter(points1,points2)
+plt.show()
+
