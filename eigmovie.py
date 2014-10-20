@@ -68,3 +68,4 @@ for t in range(num_trials):
 
 eigmovie(avgface, np.reshape(w1,(60,64)), 10)
 eigmovie(avgface, np.reshape(w2,(60,64)), 10)
+print w1 - w2
