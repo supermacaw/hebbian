@@ -39,60 +39,70 @@ for i in range(48):
   #plt.imshow(newdata[:,i].reshape((60,64)))
   #plt.show()
 
-w1=np.random.randn(3840,).astype(float);   
-w2=np.random.randn(3840,).astype(float)    
-num_trials=700;
+# w1=np.random.randn(3840,).astype(float);   
+# w2=np.random.randn(3840,).astype(float)  
+
+num_trials=400;
 #eta=0.1/K;
-print w1, w2
+
 eta = 0.00001
 D = newdata
+numvectors = 15
+w = np.random.randn(3840,numvectors) 
 
-dw1 = np.zeros((3840,)).astype(float)
-dw2 = np.zeros((3840,)).astype(float)
-outputs1 = np.zeros((48))
-outputs2 = np.zeros((48))
-for t in range(num_trials):
+outputs = np.zeros((48,numvectors)).astype(float)
+dw = np.zeros((3840,numvectors)).astype(float)
+# dw1 = np.zeros((3840,)).astype(float)
+# dw2 = np.zeros((3840,)).astype(float)
+# outputs1 = np.zeros((48))
+# outputs2 = np.zeros((48))
+for t in range(num_trials): 
   # compute neuron output for all data (can be done as one line)
   for i in range(48):
     #print w1.shape, D[:,i].shape, outputs1.shape
-    outputs1[i] = np.dot(w1,D[:,i])
-    #print outputs1[i]
-    # print w1, D[:,i]
-    #print w1, w2
-    outputs2[i] = np.dot(w2,D[:,i])
-    dw1 = eta * outputs1[i]*(D[:,i] - outputs1[i] * w1)/float(len(outputs1))
-    dw2 = eta * outputs2[i] * (D[:,i]- outputs2[i]* w2 - outputs1[i]*w1)/float(len(outputs2))
-  #print dw1, dw2
-    w1 = w1 + dw1 / np.linalg.norm(w1 + dw1)
-    w2 = w2 + dw2 / np.linalg.norm(w1 + dw2)
+    pastoutputtimesweights = []
+    for v in range(numvectors):
+      outputs[i][v] = np.dot(w[:,v], D[:,i])
+      dw[:,v] = eta * outputs[i][v] * (D[:,i] - outputs[i][v]*w[:,v] - sum(pastoutputtimesweights))/float(48)
+      pastoutputtimesweights.append(outputs[i][v] * w[:,v])
+      #print pastoutputtimesweights
+      w[:,v] = w[:,v] + dw[:,v] / np.linalg.norm(w[:,v] + dw[:,v])
 
-# eigmovie(np.zeros((60,64)), np.reshape(w2,(60,64)), 1000)
-# eigmovie(np.zeros((60,64)), np.reshape(w1,(60,64)), 1000)
-# plt.figure()
+
+  #   outputs1[i] = np.dot(w1,D[:,i])
+  #   #print outputs1[i]
+  #   # print w1, D[:,i]
+  #   #print w1, w2
+  #   outputs2[i] = np.dot(w2,D[:,i])
+  #   dw1 = eta * outputs1[i]*(D[:,i] - outputs1[i] * w1)/float(len(outputs1))
+  #   dw2 = eta * outputs2[i] * (D[:,i]- outputs2[i]* w2 - outputs1[i]*w1)/float(len(outputs2))
+  # #print dw1, dw2
+  #   w1 = w1 + dw1 / np.linalg.norm(w1 + dw1)
+  #   w2 = w2 + dw2 / np.linalg.norm(w1 + dw2)
+
 # plt.imshow(w1.reshape((64,60)))
 # plt.show()
-# plt.figure()
 # plt.imshow(w2.reshape((64,60)))
 # plt.show()
-#eigmovie(avgface, w1.reshape((64,60)), 100)
+# for v in range(numvectors):
+#   plt.imshow(w[:,v].reshape((64,60)))
+#   plt.show()
 
-plt.imshow(w1.reshape((64,60)))
-plt.show()
-plt.imshow(w2.reshape((64,60)))
-plt.show()
+# plt.figure()
+# points1 = [np.dot(faces[:,i].astype(float),w1.astype(float)) for i in range(48)] 
+# points2 = [np.dot(faces[:,i].astype(float),w2.astype(float)) for i in range(48)]
+# print points1, points2
+# plt.scatter(points1,points2)
+# plt.show()
+points = np.zeros((numvectors, 48))
+for v in range(numvectors):
+  points[v]= [np.dot(faces[:,i], w[:,v]) for i in range(48)]
 
-plt.figure()
-points1 = [np.dot(faces[:,i].astype(float),w1.astype(float)) for i in range(48)] 
-points2 = [np.dot(faces[:,i].astype(float),w2.astype(float)) for i in range(48)]
-print points1, points2
-plt.scatter(points1,points2)
-plt.show()
+# plt.imshow(faces[:,0].reshape((64,60)))
+# plt.show()
 
-plt.imshow(faces[:,0].reshape((64,60)))
-plt.show()
-
-plt.imshow(avgface.reshape((64,60)))
-plt.show()
-plt.imshow((avgface + points1[0] * w1 + points2[0] * w2).reshape(64,60).T)
+# plt.imshow(avgface.reshape((64,60)).T)
+# plt.show()
+plt.imshow((avgface + np.dot(w, points).sum(1)).reshape(64,60).T)
 plt.show()
 
