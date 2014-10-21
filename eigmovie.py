@@ -42,12 +42,12 @@ for i in range(48):
 # w1=np.random.randn(3840,).astype(float);   
 # w2=np.random.randn(3840,).astype(float)  
 
-num_trials=400;
+num_trials=300;
 #eta=0.1/K;
 
 eta = 0.00001
 D = newdata
-numvectors = 15
+numvectors = 5
 w = np.random.randn(3840,numvectors) 
 
 outputs = np.zeros((48,numvectors)).astype(float)
@@ -103,6 +103,8 @@ for v in range(numvectors):
 
 # plt.imshow(avgface.reshape((64,60)).T)
 # plt.show()
-plt.imshow((avgface + np.dot(w, points).sum(1)).reshape(64,60).T)
+plt.imshow(faces[:,0].reshape((64,60)).T)
+plt.show()
+plt.imshow(-1*(avgface + np.dot(w, points).sum(1)).reshape(64,60).T, cmap='Greys')
 plt.show()
 
