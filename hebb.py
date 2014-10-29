@@ -17,8 +17,14 @@ N,K=d.shape;
 #hold on
 
 # initialize weights
-numvectors = 8
-w = np.random.randn(numvectors,N)   
+import random
+numvectors = 10
+#w = np.random.randn(numvectors,N)  
+weightindices = random.sample(range(0,47), numvectors)
+w = np.zeros((numvectors,3840))
+for i in range(numvectors):
+	w[i,:] = d[:,weightindices[i]]
+#w = d.random.random((numvectors,3840))
 
 # plot weight vector
 # h=plt.plot([0,w[0][0]],[0,w[0][1]],'r',linewidth=2);  
@@ -27,9 +33,9 @@ w = np.random.randn(numvectors,N)
 # j=plt.plot([0,w[3][0]],[0,w[3][1]],'m',linewidth=2);  
 #plt.show()
 
-num_trials=250;
+num_trials=10000;
 #eta=0.1/K;
-eta = 0.05
+eta = 0.0001
 #D = np.hstack((D1,D2))
 #D = D2
 D = d
